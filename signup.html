@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Signup</title>
+  <link rel="stylesheet" href="sign-in.css">
+</head>
+<body>
+  <div class="container">
+    <div class="registration form">
+      <header>Signup</header>
+      <form action="#" method="post">
+        <input type="text" id="username" name="username" placeholder="Enter your Username" required>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <input type="password" id="password" name="password" placeholder="Create a password" required>
+        <input type="password" id="confimpassword" placeholder="Confirm your password" required>
+        <input type="submit" class="button" id="signup" value="Signup">
+      </form>
+      <div class="signup">
+        <span class="signup">Already have an account?
+         <label><a href="login.html">Login</a></label>
+        </span>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword } from  "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsaJY0WpBoAWv7w7olDwvG-aOPJnF6CE",
+      authDomain: "doctor-s-appointment-8991e.firebaseapp.com",
+      databaseURL: "https://doctor-s-appointment-8991e-default-rtdb.firebaseio.com",
+      projectId: "doctor-s-appointment-8991e",
+      storageBucket: "doctor-s-appointment-8991e.appspot.com",
+      messagingSenderId: "173305661415",
+      appId: "1:173305661415:web:d63ec5d15f6775cc035f42",
+      measurementId: "G-29HHBP6FQM"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth();
+    const signup = document.getElementById('signup');
+
+    signup.addEventListner('click',(e) => { 
+        
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var username = document.getElementById('username').value;
+         createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        alert('user created!')
+        // ...
+        })
+        .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        alert('errorMessage')
+        // ..
+        });
+     });
+  </script>
+</html>
