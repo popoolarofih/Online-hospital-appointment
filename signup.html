@@ -11,13 +11,11 @@
   <div class="container">
     <div class="registration form">
       <header>Signup</header>
-      <form action="#" method="post">
         <input type="text" id="username" name="username" placeholder="Enter your Username" required>
         <input type="email" id="email" name="email" placeholder="Enter your email" required>
         <input type="password" id="password" name="password" placeholder="Create a password" required>
         <input type="password" id="confimpassword" placeholder="Confirm your password" required>
         <input type="submit" class="button" id="signup" value="Signup">
-      </form>
       <div class="signup">
         <span class="signup">Already have an account?
          <label><a href="login.html">Login</a></label>
@@ -53,7 +51,7 @@
     const auth = getAuth();
     const signup = document.getElementById('signup');
 
-    signup.addEventListner('click',(e) => { 
+    signup.addEventListener('click',(e) => { 
         
         var email = document.getElementById('email').value;
         var password = document.getElementById('password').value;
