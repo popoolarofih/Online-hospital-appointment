@@ -16,6 +16,7 @@
         <input type="password" id="password" name="password" placeholder="Create a password" required>
         <input type="password" id="confimpassword" placeholder="Confirm your password" required>
         <input type="submit" class="button" id="signup" value="Signup">
+
       <div class="signup">
         <span class="signup">Already have an account?
          <label><a href="login.html">Login</a></label>
@@ -27,7 +28,7 @@
 <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getDatabase, set, ref} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
     import { getAuth, createUserWithEmailAndPassword } from  "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
@@ -60,6 +61,10 @@
         .then((userCredential) => {
         // Signed up 
         const user = userCredential.user;
+        set(ref(database, 'users/' + user.uid),{
+            username: username,
+            email: email
+        })
         alert('user created!')
         // ...
         })
