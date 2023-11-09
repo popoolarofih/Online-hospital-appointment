@@ -114,6 +114,15 @@
                 margin-top: 1.7rem;
                 cursor: pointer;
                 transition: 0.4s;">
+                <input type="submit" id="update" class="button"  value="Update" style="color: #fff;
+                background: #009579;
+                font-size: 2rem;
+                font-weight: 500;
+                letter-spacing: 1px;
+                margin-top: 1.7rem;
+                cursor: pointer;
+                transition: 0.4s;">
+                
               
       
   </div> 
@@ -125,7 +134,7 @@
 <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-    import { getDatabase, set, ref} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getDatabase, set, ref, update} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
@@ -151,6 +160,7 @@
     var password = document.getElementById('password');
     var username = document.getElementById('username');    
     const adddoc = document.getElementById("adddoc");
+    const updatedoc = document.getElementById("update");
     
     function insertData(){  
       set(ref(database, 'availabledoctors/' + username.value),{
@@ -167,7 +177,24 @@
           alert("Doctor adding failed"+error);    
         })
     }
+
+    function Updatedoc(){
+      update(ref(database, 'availabledoctors/' + username.value),{
+        Name: username.value,
+        Email: email.value,
+        Password: password.value,
+        departmentname: inputDepartmentName.value,
+        status: docstatus.value
+      })
+      .then(()=>{
+          alert("Doctor Updated successfully");
+        })
+        .catch((error)=>{
+          alert("Doctor Updating failed"+error);    
+        })
+    }
     adddoc.addEventListener("click", insertData);
+    updatedoc.addEventListener("click", Updatedoc);
   </script>
     
 </html>
