@@ -44,14 +44,14 @@
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-    apiKey: "AIzaSyDZsaJY0WpBoAWv7w7olDwvG-aOPJnF6CE",
-    authDomain: "doctor-s-appointment-8991e.firebaseapp.com",
-    databaseURL: "https://doctor-s-appointment-8991e-default-rtdb.firebaseio.com",
-    projectId: "doctor-s-appointment-8991e",
-    storageBucket: "doctor-s-appointment-8991e.appspot.com",
-    messagingSenderId: "173305661415",
-    appId: "1:173305661415:web:c1aaf43648321367035f42",
-    measurementId: "G-8HQGDF52S2"
+      apiKey: "AIzaSyDZsaJY0WpBoAWv7w7olDwvG-aOPJnF6CE",
+      authDomain: "doctor-s-appointment-8991e.firebaseapp.com",
+      databaseURL: "https://doctor-s-appointment-8991e-default-rtdb.firebaseio.com",
+      projectId: "doctor-s-appointment-8991e",
+      storageBucket: "doctor-s-appointment-8991e.appspot.com",
+      messagingSenderId: "173305661415",
+      appId: "1:173305661415:web:c1aaf43648321367035f42",
+      measurementId: "G-8HQGDF52S2"
     };
   
     // Initialize Firebase
@@ -63,16 +63,15 @@
     var docstatus = document.getElementById('docstatus').value;
     var password = document.getElementById('password').value;
     var username = document.getElementById('username').value;    
-    const adddoc = document.getElementById("adddoc").value;
+    const adddoc = document.getElementById("adddoc");
     adddoc.addEventListener("click", insertData);
     function insertData(){  
-      set(ref(database, 'availabledoctors/'),{
+      set(ref(database, 'availabledoctors/' + username),{
             Name: username,
             Email: email,
             Password: password,
             departmentname: inputDepartmentName,
             status: docstatus
-
         })
         .then(()=>{
           alert("Doctor Added successfully");
