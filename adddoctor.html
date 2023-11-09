@@ -4,17 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Add Doctors</title>
+  <title>Add Doctors</title> 
   <link rel="stylesheet" href="sign-in.css">
 </head>
 <body>
   <div class="container">
     <div class="registration form">
       <header>Add Doctors</header>
-        <input type="text" id="username" name="username" placeholder="Enter your Username" required>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      <div class="form-row ">
+        <label for="Name">Doctor's Name</label>
+        <input type="text" id="username" name="username" placeholder="Enter Doctors Name" required>
+        <label for="Name">Doctor's Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter Doctors Email" required>
+        <label for="Name">Doctor's Password</label>
         <input type="password" id="password" name="password" placeholder="Create a password" required>
-        <input type="submit" class="button" id="signup" value="Signup">
+        <label for="inputDepartmentName">Department's Name</label>
+          <select name="dept" class="form-control wide" id="inputDepartmentName" required>
+          <option value="Nephrologist ">Nephrologist </option>
+          <option value="Optician">Optician</option>
+          <option value="Pediatrician">Pediatrician</option>
+        </select>  
+        <label for="inputDepartmentName">Doctor's Status</label>
+          <select name="status" class="form-control wide" id="docstatus" required>
+          <option value="Available ">Available</option>
+          <option value="Unavailable">Unavailable</option>
+        </select>  
+      </div>  
+        <input type="submit" class="button" id="adddoc" value="Add">
     </div>
   </div>
 </body>
@@ -22,7 +38,6 @@
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
     import { getDatabase, set, ref} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
-    import { getAuth, createUserWithEmailAndPassword } from  "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
@@ -42,32 +57,30 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-    const auth = getAuth();
-    const signup = document.getElementById('signup');
 
-    signup.addEventListener('click',(e) => { 
-        
-        var email = document.getElementById('email').value;
-        var password = document.getElementById('password').value;
-        var username = document.getElementById('username').value;
-         createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-        // Signed up 
-        const user = userCredential.user;
-        set(ref(database, 'users/' + user.uid),{
-            username: username,
-            email: email
-        })
-        alert('user created!')
-        // ...
-        })
-        .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+    var email = document.getElementById('email').value;
+    var inputDepartmentName = document.getElementById('inputDepartmentName').value;
+    var docstatus = document.getElementById('docstatus').value;
+    var password = document.getElementById('password').value;
+    var username = document.getElementById('username').value;    
+    const adddoc = document.getElementById("adddoc").value;
+    adddoc.addEventListener("click", insertData);
+    function insertData(){  
+      set(ref(database, 'availabledoctors/'),{
+            Name: username,
+            Email: email,
+            Password: password,
+            departmentname: inputDepartmentName,
+            status: docstatus
 
-        alert('errorMessage')
-        // ..
-        });
-     });
+        })
+        .then(()=>{
+          alert("Doctor Added successfully");
+        })
+        .catch((error)=>{
+          alert("Doctor adding failed"+error);    
+        })
+    }
+    
   </script>
 </html>
