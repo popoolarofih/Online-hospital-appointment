@@ -38,7 +38,7 @@
 </head>
 <style>
   .custom-button {
-    background-color: #4CAF50;
+    background-color: rgb(255, 0, 0);
     color: white; 
     padding: 10px 20px; 
     border: none; 
@@ -86,24 +86,12 @@
     <!-- end header section -->
    
   </div>
-<section>
-  <div class="container" style="padding-top: 2rem; font-weight: bolder;">
-    <div class="heading_container heading_center">
-      <h1>
-      Welcome To Online Hospital Appointment System
-    </h1>
-    <p>Appointment can only be booked on Monday - Friday and 8AM- 5PM</p>
-    
-    </div>
-    
-  </div>
-</section>
 
   <section class="treatment_section layout_padding">
     <div class="container">
       <div class="heading_container heading_center">
         <h2>
-          Available <span>Appointments</span>
+          Available <span>Doctors</span>
         </h2>
       </div>
       <div class="table-responsive">
@@ -130,11 +118,10 @@
       </p>
     </div>
   </footer>
-  <script src="js/jquery-3.4.1.min.js"></script>
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-    import { getDatabase, set, ref, child, onValue, get} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getDatabase, set, ref, child, onValue, get, remove} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
@@ -155,44 +142,52 @@
     const database = getDatabase(app);
     var tbody = document.getElementById('tbody1');
 
-function AddItemtotable(Doctor, Department, Status, Action) {
+function AddItemtotable(Doctor, Department, Status, Action, doctorId) {
   let trow = document.createElement("tr");
   let td1 = document.createElement('td');
   let td2 = document.createElement('td');
   let td3 = document.createElement('td');
   let td4 = document.createElement('td');
+  let td5 = document.createElement('td');
   td1.innerHTML = Doctor;
   td2.innerHTML = Department;
   td3.innerHTML = Status;
 
-  if (Status !== "Unavailable") {
-    // Create a "Go to Page" button and apply the custom-button class
-    let goToPageButton = document.createElement('button');
-    goToPageButton.innerText = 'Book';
-    goToPageButton.classList.add('custom-button'); // Apply the custom-button class
-
-    goToPageButton.addEventListener('click', function() {
-      // Navigate to the desired page
-      window.location.href = 'book.html'; // Replace with the actual URL of your destination page
-    });
-
-    td4.appendChild(goToPageButton);
-  }
+  let cancelButton = document.createElement('button');
+  cancelButton.innerText = 'Delete';
+  cancelButton.classList.add('custom-button');
+  cancelButton.addEventListener('click', () => {
+    cancelAppointment(doctorId);
+  });
+  td5.appendChild(cancelButton);
 
 
   trow.appendChild(td1);
   trow.appendChild(td2);
   trow.appendChild(td3);
   trow.appendChild(td4);
+  trow.appendChild(td5);
   tbody.appendChild(trow);
 }
 
 function addallitemstotable(available) {
   tbody.innerHTML = "";
   available.forEach(element => {
-    AddItemtotable(element.Name, element.departmentname, element.status);
+    AddItemtotable(element.Name, element.departmentname, element.status, element.doctorId);
   });
 }
+function cancelAppointment(doctorId) {
+  const dbRef = ref(database);
+
+  remove(child(dbRef, "bookappointment/" + doctorId))
+    .then(() => {
+      alert("Doctor removed successfully");
+    })
+    .catch((error) => {
+      alert("Unsuccessful: " + error);
+    });
+}
+
 
 function GetAllDataonce() {
   const dbRef = ref(database);

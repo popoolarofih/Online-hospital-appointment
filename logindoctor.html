@@ -9,22 +9,89 @@
 </head>
 <body>
   <div class="container">
-    <input type="checkbox" id="check">
     <div class="login form">
       <header>Login</header>
-      <form action="index.html">
-        <input type="text" placeholder="Enter your email">
-        <input type="password" placeholder="Enter your password">
-        <a href="#">Forgot password?</a>
-        <input type="button" class="button" value="Login">
-      </form>
-      <!-- <div class="signup">
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <input type="password" id="password" name="password" placeholder="Enter Password" required>
+        <!-- <a href="#">Forgot password?</a> -->
+        <input type="submit" class="button" id="login" name="login" value="Login">
+      <div class="signup">
         <span class="signup">Don't have an account?
-         <label><a href="signup.html"></a>Signup</label>
+         <label><a href="signup.html">Signup</a></label>
         </span>
-      </div> -->
+      </div>
     </div>
    
   </div>
 </body>
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getDatabase, set, ref, update} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from  "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsaJY0WpBoAWv7w7olDwvG-aOPJnF6CE",
+      authDomain: "doctor-s-appointment-8991e.firebaseapp.com",
+      databaseURL: "https://doctor-s-appointment-8991e-default-rtdb.firebaseio.com",
+      projectId: "doctor-s-appointment-8991e",
+      storageBucket: "doctor-s-appointment-8991e.appspot.com",
+      messagingSenderId: "173305661415",
+      appId: "1:173305661415:web:d63ec5d15f6775cc035f42",
+      measurementId: "G-29HHBP6FQM"
+    };
+  
+    // Initialize Firebase
+    
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const auth = getAuth();
+
+const loginButton = document.getElementById('login');
+
+loginButton.addEventListener('click', (e) => {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      const doctorId = user.uid;
+      const dt = new Date();
+
+      // Update the last login timestamp in the database
+      update(ref(database, 'availabledoctors/' + doctorId), {
+        last_login: dt,
+      });
+
+      alert('Welcome Back');
+      window.location.href = 'viewdoctors.html';
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      alert("Unsuccessful: " + error);
+    });
+});
+
+const user = auth.currentUser;
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in
+    const doctorId = user.uid;
+    // Handle the authenticated user here, e.g., redirect to the dashboard
+  } else {
+    // User is signed out
+    // Handle the case where the user is signed out
+  }
+});
+
+  </script>
 </html>

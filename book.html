@@ -101,14 +101,6 @@
                   <option value="William ">William </option>
                 </select>
               </div>
-              <div class="form-group col-lg-4">
-                <label for="inputDepartmentName">Department's Name</label>
-                <select name="" class="form-control wide" id="inputDepartmentName">
-                  <option value="Nephrologist ">Nephrologist </option>
-                  <option value="Optician">Optician </option>
-                  <option value="Pediatrician">Pediatrician</option>
-                </select>
-              </div>
             </div>
             <div class="form-row ">
               <div class="form-group col-lg-4">
@@ -126,20 +118,9 @@
                   <input type="time" id="inputtime" class="form-control" >
                 </div>
               </div>
-              
             </div>
-            <input type="submit" id="adddoc" class="button"  value="Book" style="background-color: #006653;
-            color: white; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 5px;
-            cursor: pointer;">
-            <input type="submit" id="update" class="button"  value="Update Booked" style=" background-color: #006653;
-            color: white; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 5px;
-            cursor: pointer;">
+            <input type="submit" id="adddoc" class="button"  value="Book" style="background-color: #006653; color: white; padding: 10px 20px;  border: none; border-radius: 5px; cursor: pointer;">
+            <input type="submit" id="update" class="button"  value="Update Booked" style="background-color: #006653; color: white; padding: 10px 20px;  border: none; border-radius: 5px; cursor: pointer;">
         </div>
       </div>
     </div>
@@ -173,55 +154,65 @@
     };
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+const database = getDatabase(app);
 
-    var Patient = document.getElementById('PatientName');
-    var inputDepartmentName = document.getElementById('inputDepartmentName');
-    var DoctorName = document.getElementById('DoctorName');
-    var inputPhone = document.getElementById('inputPhone');
-    var username = document.getElementById('username');
-    var inputSymptoms = document.getElementById('inputSymptoms');
-    var inputDate = document.getElementById('inputDate');
-    var inputtime = document.getElementById('inputtime');
-    const adddoc = document.getElementById("adddoc");
-    const updatedoc = document.getElementById("update");
-    
-    function insertData(){  
-      set(ref(database, 'bookappointment/' + Patient.value),{
-            Name: Patient.value,
-            inputSymptoms: inputSymptoms.value,
-            inputPhone: inputPhone.value,
-            departmentname: inputDepartmentName.value,
-            inputDate: inputDate.value,
-            inputtime: inputtime.value,
-            DoctorName: DoctorName.value,
-        })
-        .then(()=>{
-          alert("Booked successfully");
-        })
-        .catch((error)=>{
-          alert("Booking failed"+error);    
-        })
-    }
+var Patient = document.getElementById('PatientName');
+var DoctorName = document.getElementById('DoctorName');
+var inputPhone = document.getElementById('inputPhone');
+var inputSymptoms = document.getElementById('inputSymptoms');
+var inputDate = document.getElementById('inputDate');
+var inputtime = document.getElementById('inputtime');
+const adddoc = document.getElementById("adddoc");
+const updatedoc = document.getElementById("update");
 
-    function Updatedoc(){
-      update(ref(database, 'bookappointment/' + Patient.value),{
-        Name: Patient.value,
-        inputSymptoms: inputSymptoms.value,
-        inputPhone: inputPhone.value,
-        departmentname: inputDepartmentName.value,
-        inputDate: inputDate.value,
-        inputtime: inputtime.value,
-        DoctorName: DoctorName.value,
-      })
-      .then(()=>{
-          alert("Appointment Updated successfully");
-        })
-        .catch((error)=>{
-          alert("Appointment Updating failed"+error);    
-        })
-    }
-    // ...
+function generateAppointmentId() {
+  return Date.now().toString(); // Use a timestamp as a unique identifier
+}
+
+function insertData() {
+  const appointmentId = generateAppointmentId();
+
+  set(ref(database, 'bookappointment/' + appointmentId), {
+    appointmentId: appointmentId,
+    Name: Patient.value,
+    inputSymptoms: inputSymptoms.value,
+    inputPhone: inputPhone.value,
+    inputDate: inputDate.value,
+    inputtime: inputtime.value,
+    DoctorName: DoctorName.value,
+  })
+    .then(() => {
+      alert("Booked successfully");
+    })
+    .catch((error) => {
+      alert("Booking failed" + error);
+    });
+}
+
+function Updatedoc() {
+  const appointmentId = generateAppointmentId();
+
+  update(ref(database, 'bookappointment/' + appointmentId), {
+    appointmentId: appointmentId,
+    Name: Patient.value,
+    inputSymptoms: inputSymptoms.value,
+    inputPhone: inputPhone.value,
+    inputDate: inputDate.value,
+    inputtime: inputtime.value,
+    DoctorName: DoctorName.value,
+  })
+    .then(() => {
+      alert("Appointment Updated successfully");
+    })
+    .catch((error) => {
+      alert("Appointment Updating failed" + error);
+    });
+}
+
+// ...
+
+// The rest of your code remains unchanged
+
 
 function SelectData() {
   const dbRef = ref(database);
@@ -234,7 +225,6 @@ function SelectData() {
 
         // Update the "Doctor's Name" and "Department's Name" <select> elements
         DoctorName.innerHTML = ""; // Clear existing options
-        inputDepartmentName.innerHTML = ""; // Clear existing options
 
         // Add the "Select Doctor" option
         const selectDoctorOption = document.createElement('option');
@@ -250,11 +240,7 @@ function SelectData() {
           doctorOption.value = doctor.Name;
           doctorOption.textContent = doctor.Name;
           DoctorName.appendChild(doctorOption);
-          // Add the department name to the "Department's Name" <select>
-          const departmentOption = document.createElement('option');
-          departmentOption.value = doctor.inputDepartmentName;
-          departmentOption.textContent = doctor.inputDepartmentName;
-          inputDepartmentName.appendChild(departmentOption);
+          
         }
       } else {
         alert("No Doctors Available");
@@ -268,21 +254,11 @@ function SelectData() {
 // ...
 
 window.onload = SelectData;
+
     adddoc.addEventListener("click", insertData);
     updatedoc.addEventListener("click", Updatedoc);
   </script>
-  <!-- jQery -->
-  <script src="js/jquery-3.4.1.min.js"></script>
-  <!-- bootstrap js -->
-  <script src="js/bootstrap.js"></script>
-  <!-- nice select -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js" integrity="sha256-Zr3vByTlMGQhvMfgkQ5BtWRSKBGa2QlspKYJnkjZTmo=" crossorigin="anonymous"></script>
-  <!-- owl slider -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-  <!-- datepicker -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
-  <!-- custom js -->
-  <script src="js/custom.js"></script>
+  
 
 </body>
 

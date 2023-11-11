@@ -115,6 +115,8 @@
                 border: none; 
                 border-radius: 5px;
                 cursor: pointer;">
+                <input type="hidden" id="doctorId" value="12345">
+
   </div> 
   </div> 
   </div> 
@@ -131,7 +133,7 @@
 <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-    import { getDatabase, set, ref, update} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getDatabase, set, ref, update, push} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
   
@@ -149,69 +151,66 @@
     };
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+const database = getDatabase(app);
 
-    var email = document.getElementById('email');
-    var inputDepartmentName = document.getElementById('inputDepartmentName');
-    var docstatus = document.getElementById('docstatus');
-    var password = document.getElementById('password');
-    var username = document.getElementById('username');    
-    const adddoc = document.getElementById("adddoc");
-    const updatedoc = document.getElementById("update");
+var email = document.getElementById('email');
+var inputDepartmentName = document.getElementById('inputDepartmentName');
+var docstatus = document.getElementById('docstatus');
+var password = document.getElementById('password');
+var username = document.getElementById('username');
+const adddoc = document.getElementById("adddoc");
+const updatedoc = document.getElementById("update");
 
-    function insertData(){  
-      if (inputDepartmentName.value.trim() === "") {
-        alert("Please select a department.");
-        return false; 
-      }
-      adddoc.addEventListener("click", function (event) {
-      if (!insertData()) {
-        event.preventDefault(); 
-      }
-      });
-      set(ref(database, 'availabledoctors/' + username.value),{
-            Name: username.value,
-            Email: email.value,
-            Password: password.value,
-            departmentname: inputDepartmentName.value,
-            status: docstatus.value
-        })
-        .then(()=>{
-          alert("Doctor Added successfully");
-        })
-        .catch((error)=>{
-          alert("Doctor adding failed"+error);    
-        })
-    }
+function insertData() {
+  if (inputDepartmentName.value.trim() === "") {
+    alert("Please select a department.");
+    return false;
+  }
 
-    function Updatedoc(){
-      if (inputDepartmentName.value.trim() === "") {
-        alert("Please select a department.");
-        return false; 
-      }
-      adddoc.addEventListener("click", function (event) {
-      if (!Updatedoc()) {
-        event.preventDefault(); 
-      }
-      });
-      update(ref(database, 'availabledoctors/' + username.value),{
-        Name: username.value,
-        Email: email.value,
-        Password: password.value,
-        departmentname: inputDepartmentName.value,
-        status: docstatus.value
-      })
-      .then(()=>{
-          alert("Doctor Updated successfully");
-        })
-        .catch((error)=>{
-          alert("Doctor Updating failed"+error);    
-        })
-    }
- 
+  // Generate a unique ID for the doctor
+  const doctorId = push(ref(database, 'availabledoctors')).key;
 
-    adddoc.addEventListener("click", insertData);
-    updatedoc.addEventListener("click", Updatedoc);
+  set(ref(database, 'availabledoctors/' + doctorId), {
+    doctorsId: doctorId,
+    Name: username.value,
+    Email: email.value,
+    Password: password.value,
+    departmentname: inputDepartmentName.value,
+    status: docstatus.value,
+  })
+    .then(() => {
+      alert("Doctor Added successfully");
+    })
+    .catch((error) => {
+      alert("Doctor adding failed" + error);
+    });
+}
+
+function Updatedoc() {
+  if (inputDepartmentName.value.trim() === "") {
+    alert("Please select a department.");
+    return false;
+  }
+
+  const doctorId = document.getElementById("doctorId").value;
+  update(ref(database, 'availabledoctors/' + doctorId), {
+    Name: username.value,
+    Email: email.value,
+    Password: password.value,
+    departmentname: inputDepartmentName.value,
+    status: docstatus.value,
+  })
+    .then(() => {
+      alert("Doctor Updated successfully");
+    })
+    .catch((error) => {
+      alert("Doctor Updating failed" + error);
+    });
+}
+
+adddoc.addEventListener("click", insertData);
+updatedoc.addEventListener("click", Updatedoc);
+
   </script>
   <!-- jQery -->
   <script src="js/jquery-3.4.1.min.js"></script>
