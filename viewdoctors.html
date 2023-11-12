@@ -142,7 +142,7 @@
     const database = getDatabase(app);
     var tbody = document.getElementById('tbody1');
 
-function AddItemtotable(Doctor, Department, Status, Action, doctorId) {
+function AddItemtotable(Doctor, Department, Status, Action, doctorsId) {
   let trow = document.createElement("tr");
   let td1 = document.createElement('td');
   let td2 = document.createElement('td');
@@ -157,10 +157,9 @@ function AddItemtotable(Doctor, Department, Status, Action, doctorId) {
   cancelButton.innerText = 'Delete';
   cancelButton.classList.add('custom-button');
   cancelButton.addEventListener('click', () => {
-    cancelAppointment(doctorId);
+    cancelDoctor(doctorsId);
   });
   td5.appendChild(cancelButton);
-
 
   trow.appendChild(td1);
   trow.appendChild(td2);
@@ -173,13 +172,12 @@ function AddItemtotable(Doctor, Department, Status, Action, doctorId) {
 function addallitemstotable(available) {
   tbody.innerHTML = "";
   available.forEach(element => {
-    AddItemtotable(element.Name, element.departmentname, element.status, element.doctorId);
+    AddItemtotable(element.Name, element.departmentname, element.status, element.doctorsId);
   });
 }
-function cancelAppointment(doctorId) {
+function cancelDoctor(doctorsId) {
   const dbRef = ref(database);
-
-  remove(child(dbRef, "bookappointment/" + doctorId))
+  remove(child(dbRef, "availabledoctors/" + doctorsId))
     .then(() => {
       alert("Doctor removed successfully");
     })
@@ -187,7 +185,6 @@ function cancelAppointment(doctorId) {
       alert("Unsuccessful: " + error);
     });
 }
-
 
 function GetAllDataonce() {
   const dbRef = ref(database);

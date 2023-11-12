@@ -4,30 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Login</title>
+  <title>Doctor's Login</title>
   <link rel="stylesheet" href="sign-in.css">
 </head>
 <body>
   <div class="container">
     <div class="login form">
-      <header>Login</header>
+      <header>Doctor's Login</header>
+      <form id="login" method="POST" action="#">
         <input type="email" id="email" name="email" placeholder="Enter your email" required>
         <input type="password" id="password" name="password" placeholder="Enter Password" required>
-        <!-- <a href="#">Forgot password?</a> -->
-        <input type="submit" class="button" id="login" name="login" value="Login">
-      <div class="signup">
-        <span class="signup">Don't have an account?
-         <label><a href="signup.html">Signup</a></label>
-        </span>
+        <input type="submit" class="button" name="login" value="Login">
+      </form>
       </div>
     </div>
-   
   </div>
 </body>
 <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-    import { getDatabase, set, ref, update} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
+    import { getDatabase, set, ref, update, get} from "https://www.gstatic.com/firebasejs/10.5.2/firebase-database.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from  "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
@@ -41,57 +37,53 @@
       projectId: "doctor-s-appointment-8991e",
       storageBucket: "doctor-s-appointment-8991e.appspot.com",
       messagingSenderId: "173305661415",
-      appId: "1:173305661415:web:d63ec5d15f6775cc035f42",
-      measurementId: "G-29HHBP6FQM"
+      appId: "1:173305661415:web:c1aaf43648321367035f42",
+      measurementId: "G-8HQGDF52S2"
     };
-  
-    // Initialize Firebase
-    
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const auth = getAuth();
+const doctorsRef = ref(database, 'availabledoctors'); 
 
-const loginButton = document.getElementById('login');
+function loginDoctor(email, password) {
+      console.log('Logging in with email:', email, 'and password:', password);
+      get(doctorsRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const availableDoctors = snapshot.val();
 
-loginButton.addEventListener('click', (e) => {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+            for (const doctorId in availableDoctors) {
+              const doctor = availableDoctors[doctorId];
+              if (doctor.Email === email && doctor.Password === password) {
+                alert('Login successful');
+                console.log('Logged in as', doctor.Name);
+                window.location.href = 'viewdoctors.html'; // Redirect to doctor's dashboard
+                return;
+              }
+            }
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      const doctorId = user.uid;
-      const dt = new Date();
+            // If the loop completes without finding a matching doctor, it's an invalid login
+            alert('Invalid login credentials. Please try again.');
+          } else {
+            // Handle the case where the "availabledoctors" collection doesn't exist
+            alert('No doctors available. Please contact support.');
+          }
+        })
+        .catch((error) => {
+          alert('Error: ' + error.message);
+        });
+    }
 
-      // Update the last login timestamp in the database
-      update(ref(database, 'availabledoctors/' + doctorId), {
-        last_login: dt,
-      });
-
-      alert('Welcome Back');
-      window.location.href = 'viewdoctors.html';
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      alert("Unsuccessful: " + error);
+    // Add an event listener for the form submission
+    const loginForm = document.getElementById('login');
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      loginDoctor(email, password);
     });
-});
-
-const user = auth.currentUser;
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // User is signed in
-    const doctorId = user.uid;
-    // Handle the authenticated user here, e.g., redirect to the dashboard
-  } else {
-    // User is signed out
-    // Handle the case where the user is signed out
-  }
-});
 
   </script>
 </html>
